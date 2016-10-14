@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <title>HTML5 Geolocation</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body onload="loadDemo()">
+
+<h1>HTML5 Geolocation Example</h1>
+
+<span class="info">
+  <p id="status">HTML5 Geolocation is <strong>not</strong> supported in your browser.</p>
+</span>
+
+<h2>Current Position:</h2>
+<table border="1">
+          <tr>
+            <th width="40" scope="col"><h5 align="left">Lat.</h5></th>
+             <td width="114" id="latitude">?</td>
+          </tr>
+          <tr>
+            <td><h5>Long.</h5></td>
+            <td id="longitude">?</td>
+          </tr>
+          <tr>
+            <td><h5>Time</h5></td>
+            <td id="longitude2">11:00:00 a.m.</td>
+          </tr>
+</table>
+
+
+<p align="center" class="style2">Copyright (c) 2010</p>
+
+<script type="text/javascript">
+
+    function loadDemo() {
+        if(navigator.geolocation) {
+            document.getElementById("status").innerHTML = "HTML5 Geolocation is supported in your browser.";
+            navigator.geolocation.getCurrentPosition(updateLocation);
+        }
+    }
+
+    function updateLocation(position) {
+        var latitude = position.coords.latitude;
+        var longitude = position.coords.longitude;
+
+        if (!latitude || !longitude) {
+            document.getElementById("status").innerHTML = "HTML5 Geolocation is supported in your browser, but location is currently not available.";
+            return;
+        }
+
+        document.getElementById("latitude").innerHTML = latitude;
+        document.getElementById("longitude").innerHTML = longitude;
+    }
+
+</script>
+</body>
+</html>

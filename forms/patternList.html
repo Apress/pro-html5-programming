@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>Pattern List</title>
+
+<!--
+This demo does not yet work in any browsers at the time of publication.
+It was planned to be an additional Practical Extra called "Natural (List) Selection".
+
+It was meant to show how you can use patterns to restrict the values in a datalist
+live so that as the user types, the datalist options are filtered. Datalists are only
+supported in Opera at the moment, and this demo works there. Sort of. Unfortunately,
+when the pattern is applied, the visuals of the list don't actually reflect that
+until the next keypress. So it always lags behind by one key. I tried everything I
+could to force it to refresh the list immediately, but to no avail. Maybe this will
+work when other browsers like Chrome and Safari add their datalist support.
+-->
+
+<script>
+    function filterList(field) {
+        // get the current value from the field
+        var currVal = field.value;
+
+        // escape any regular expression characters from the entered text
+        currVal = currVal.replace(/([.*+?|(){}[\]\\])/ig, "\\$1");
+
+        field.pattern = currVal + ".*";
+    }
+
+</script>
+
+</head>
+
+<body>
+
+<form name="listForm">
+    <p><label for="patternList">Select from the list:</label>
+    <input type="text" id="patternChoice" list="fullList" onkeydown="filterList(this)"></p>
+    <datalist id="fullList">
+        <option value="one">
+        <option value="two">
+        <option value="three">
+        <option value="four">
+        <option value="five">
+        <option value="six">
+        <option value="seven">
+        <option value="eight">
+        <option value="nine">
+        <option value="ten">
+    </datalist>
+    <span>Type in the field to filter the options.</span>
+</form>
+</body>
+</html>

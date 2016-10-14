@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>Tahoe 216</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href = "html5.css">
+
+<script>
+    // functions for determining the distance between two
+    // latitude and longitude positions
+    function toRadians(num) {
+      return num * Math.PI / 180;
+    }
+
+    function distance(latitude1, longitude1, latitude2, longitude2) {
+      // R is the radius of the earth in kilometers
+      var R = 6371;
+
+      var deltaLatitude = toRadians((latitude2-latitude1));
+      var deltaLongitude = toRadians((longitude2-longitude1));
+      latitude1 = toRadians(latitude1), latitude2 = toRadians(latitude2);
+
+      var a = Math.sin(deltaLatitude/2) *
+              Math.sin(deltaLatitude/2) +
+              Math.cos(latitude1) *
+              Math.cos(latitude2) *
+              Math.sin(deltaLongitude/2) *
+              Math.sin(deltaLongitude/2);
+
+      var c = 2 * Math.atan2(Math.sqrt(a),
+                             Math.sqrt(1-a));
+      var d = R * c;
+      return d;
+    }
+
+    // latitude and longitude for the finish line in the Lake Tahoe race
+    var finishLat = 39.17222;
+    var finishLong = -120.13778;
+
+    // display the name and distance in the page
+    function displayRacerLocation(name, distance) {
+        // locate the HTML element for this ID
+        // if one doesn't exist, create it
+        var incomingRow = document.getElementById(name);
+        if (!incomingRow) {
+            incomingRow = document.createElement('div');
+            incomingRow.setAttribute('id', name);
+            incomingRow.userText = name;
+
+            document.getElementById("leaderboard").appendChild(incomingRow);
+        }
+
+        incomingRow.innerHTML = incomingRow.userText + " is " +
+                                distance.toFixed(5) + " km from the finish line";
+    }
+
+    // callback when new position data is retrieved from the websocket
+    function dataReturned(locationData) {
+        // break the data into ID, latitude, and longitude
+        var allData = JSON.parse(locationData);
+        var incomingId   = allData[1];
+        var incomingLat  = allData[2];
+        var incomingLong = allData[3];
+
+        // update the row text with the new values
+        var currentDistance = distance(incomingLat, incomingLong, finishLat, finishLong);
+
+        // store the incoming user name and distance in storage
+        window.sessionStorage[incomingId] = currentDistance;
+
+        // display the new user data in the page
+        displayRacerLocation(incomingId, currentDistance);
+    }
+
+    // when the page loads, make a socket connection to the race broadcast server
+    function loadDemo() {
+        // make sure the browser supports sessionStorage
+        if (typeof(window.sessionStorage) === "undefined") {
+            document.getElementById("leaderboardStatus").innerHTML = "Your browser does not support HTML5 storage";
+            return;
+        }
+
+        var storage = window.sessionStorage;
+
+        // for each key in the storage database, display a new racer
+        // location in the page
+        for (var i=0; i < storage.length; i++) {
+            var currRacer = storage.key(i);
+            displayRacerLocation(currRacer, storage[currRacer]);
+        }
+
+        // test to make sure that Web Sockets are supported
+        if (window.WebSocket) {
+
+            // the location of our broadcast WebSocket server
+            url = "ws://localhost:8080";
+            socket = new WebSocket(url);
+            socket.onopen = function() {
+                document.getElementById("leaderboardStatus").innerHTML = "Leaderboard: Connected!";
+            }
+            socket.onmessage = function(e) {
+                dataReturned(e.data);
+            }
+        }
+    }
+
+    // add listeners on page load and unload
+    window.addEventListener("load", loadDemo, true);
+</script>
+
+</head>
+
+<body>
+  <div id="container">
+    <header>
+        <h1>Tahoe 216</h1>
+        <h3 align="center">3 Days, 216-Miles, One Crazy Runner's High</h3>
+        <h2>&nbsp;</h2>
+        <h4>Live  Results Now!</h4>
+    </header>
+
+    <nav>
+        <h2>Links</h2>
+        <a href="index.html" title="Home">Home</a>
+        <a href="signup.html" title="Are you crazy enough?">Sign Up</a>
+        <a href="about.html" title="Learn more about the T216">About the Race</a>
+    </nav>
+
+    <section>
+      <article>
+        <h2>Live T216 Leaderboard</h2>
+        <p id="leaderboardStatus">Leaderboard: Connecting...</p>
+        <div id="leaderboard"></div>
+      </article>
+
+        <article>
+          <h2>Latest News</h2>
+          <p>Albers finally breaks magical 2:00 Hour marathon barrier! <a href="./more.html"><em>More</em></a></p>
+          <p>500-miles stil not enough for Salim. <a href="./more.html"><em>More</em></a></p>
+          <p>Lubbers: Extra weight actually helped me on downhills! <a href="./more.html"><em>More</em></a></p>
+      </article>
+
+    </section>
+
+   <aside>
+      <h2>Sponsors</h2>
+      <p align="center">Happy Trails Running Club</p>
+     <p align="center"><img src="happy-trails-rc.gif" alt="Happy Trails Running Club" width="149" height="207"></p>
+   </aside>
+
+    <footer>
+        <p>Powered by HTML5!</p>
+    </footer>
+
+</div>
+
+</html>

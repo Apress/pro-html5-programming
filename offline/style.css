@@ -1,0 +1,12 @@
+body {
+    font-family: sans-serif;
+}
+
+#info p {
+    padding: 4px;
+    margin: 0px;
+}
+
+#info p:nth-child(odd) {
+    background-color: #ccc;
+}

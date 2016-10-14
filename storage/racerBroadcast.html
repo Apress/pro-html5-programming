@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Racer Broadcast</title>
+  <link rel="stylesheet" href = "styles.css">
+</head>
+
+<body onload="loadDemo()">
+
+<h1>Racer Broadcast</h1>
+
+Racer name: <input type="text" id="racerName" value="Racer X"/>
+<button onclick="startSendingLocation()">Start</button>
+
+<div><strong>Geolocation</strong>: <p id="geoStatus">HTML5 Geolocation not started.</p></div>
+<div><strong>WebSocket</strong>: <p id="socketStatus">HTML5 WebSocket is <strong>not</strong> supported in your browser.</p></div>
+
+<script>
+
+    // reference to the Web Socket
+    var socket;
+
+    var lastLocation;
+
+    function updateSocketStatus(message) {
+        document.getElementById("socketStatus").innerHTML = message;
+    }
+
+    function updateGeolocationStatus(message) {
+        document.getElementById("geoStatus").innerHTML = message;
+    }
+
+    function handleLocationError(error) {
+        switch(error.code)
+        {
+        case 0:
+          updateGeolocationStatus("There was an error while retrieving your location: " + error.message);
+          break;
+        case 1:
+          updateGeolocationStatus("The user prevented this page from retrieving a location.");
+          break;
+        case 2:
+          updateGeolocationStatus("The browser was unable to determine your location: " + error.message);
+          break;
+        case 3:
+          updateGeolocationStatus("The browser timed out before retrieving the location.");
+          break;
+        }
+    }
+
+    function loadDemo() {
+        // test to make sure that Web Sockets are supported
+        if (window.WebSocket) {
+
+            // the location where our broadcast WebSocket server is located
+            url = "ws://localhost:8080";
+            socket = new WebSocket(url);
+            socket.onopen = function() {
+                updateSocketStatus("Connected to WebSocket race broadcast server");
+            }
+        }
+    }
+
+    function updateLocation(position) {
+        var latitude = position.coords.latitude;
+        var longitude = position.coords.longitude;
+        var timestamp = position.timestamp;
+
+        updateGeolocationStatus("Location updated at " + timestamp);
+
+        // Send racer location via WebSocket
+        var toSend = JSON.stringify([document.getElementById("racerName").value, latitude, longitude]);
+        sendMyLocation(toSend);
+    }
+
+    function sendMyLocation(newLocation) {
+        if (socket) {
+            socket.send(newLocation);
+            updateSocketStatus("Sent: " + newLocation);
+        }
+    }
+
+    function startSendingLocation() {
+        var geolocation;
+        if(navigator.geolocation) {
+            geolocation = navigator.geolocation;
+            updateGeolocationStatus("HTML5 Geolocation is supported in your browser.");
+        }
+
+        // register for position updates using the Geolocation API
+        geolocation.watchPosition(updateLocation,
+                                  handleLocationError,
+                                  {maximumAge:20000});
+    }
+
+</script>
+</body>
+</html>

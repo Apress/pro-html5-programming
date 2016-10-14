@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<title>SessionStorage</title>
+
+<div id="statefulWidget">
+    Data here
+</div>
+
+<script>
+
+var data;
+
+function loadData() {
+    if (typeof(window.sessionStorage) === "undefined") {
+        document.getElementById("support").innerHTML = "Your browser does not support HTML5 storage";
+    }
+
+    data = JSON.parse(sessionStorage["raceLog"])
+    console.log(data);
+}
+
+function saveData() {
+    sessionStorage["raceLog"] = JSON.stringify(data);
+}
+
+window.addEventListener("load", loadData, true);
+window.addEventListener("unload", saveData, true);
+
+</script>

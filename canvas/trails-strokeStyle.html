@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <title>Stroke style example</title>
+
+  <canvas id="trails" style="border: 1px solid;"  width="400" height="600"> </canvas>
+  <script>
+        function createCanopyPath(context) {
+            context.beginPath();
+            context.moveTo(-25, -50);
+            context.lineTo(-10, -80);
+            context.lineTo(-20, -80);
+            context.lineTo(-5, -110);
+            context.lineTo(-15, -110);
+
+            context.lineTo(0, -140);
+
+            context.lineTo(15, -110);
+            context.lineTo(5, -110);
+            context.lineTo(20, -80);
+            context.lineTo(10, -80);
+            context.lineTo(25, -50);
+            context.closePath();
+        }
+
+        function drawTrails() {
+            var canvas = document.getElementById('trails');
+            var context = canvas.getContext('2d');
+
+            context.save();
+            context.translate(130, 250);
+
+            createCanopyPath(context);
+
+            // Increase the line width
+            context.lineWidth = 4;
+
+            // Round the corners at path joints
+            context.lineJoin = 'round';
+
+            // Change the color to brown
+            context.strokeStyle = '#663300';
+
+            context.stroke();
+            context.restore();
+        }
+
+        window.addEventListener("load", drawTrails, true);
+  </script>
+</html>
+

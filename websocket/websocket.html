@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<title>WebSocket Test Page</title>
+<script>
+
+    var log = function(s) {
+        if (document.readyState !== "complete") {
+            log.buffer.push(s);
+        } else {
+            document.getElementById("output").innerHTML += (s + "\n")
+        }
+    }
+    log.buffer = [];
+
+    url = "ws://localhost:8080/echo";
+    w = new WebSocket(url);
+    w.onopen = function() {
+        log("open");
+        w.send("thank you for accepting this Web Socket request");
+    }
+    w.onmessage = function(e) {
+        log(e.data);
+    }
+    w.onclose = function(e) {
+        log("closed");
+    }
+
+    window.onload = function() {
+        log(log.buffer.join("\n"));
+        document.getElementById("sendButton").onclick = function() {
+            w.send(document.getElementById("inputMessage").value);
+        }
+    }
+</script>
+
+<input type="text" id="inputMessage" value="Hello, Web Socket!"><button id="sendButton">Send</button>
+<pre id="output"></pre>

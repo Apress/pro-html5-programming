@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <title>Curve example</title>
+
+  <canvas id="trails" style="border: 1px solid;"  width="400" height="600"> </canvas>
+  <script>
+        function createCanopyPath(context) {
+            context.beginPath();
+            context.moveTo(-25, -50);
+            context.lineTo(-10, -80);
+            context.lineTo(-20, -80);
+            context.lineTo(-5, -110);
+            context.lineTo(-15, -110);
+
+            context.lineTo(0, -140);
+
+            context.lineTo(15, -110);
+            context.lineTo(5, -110);
+            context.lineTo(20, -80);
+            context.lineTo(10, -80);
+            context.lineTo(25, -50);
+            context.closePath();
+        }
+
+        function drawTrails() {
+            var canvas = document.getElementById('trails');
+            var context = canvas.getContext('2d');
+
+            context.save();
+            context.translate(130, 250);
+
+            createCanopyPath(context);
+
+            context.lineWidth = 4;
+            context.lineJoin = 'round';
+            context.strokeStyle = '#663300';
+            context.stroke();
+
+            context.fillStyle = '#339900';
+            context.fill();
+
+            context.fillStyle = '#663300';
+            context.fillRect(-5, -50, 10, 50);
+
+            context.restore();
+
+            // Save the canvas state and draw the path
+            context.save();
+
+            context.translate(-10, 350);
+            context.beginPath();
+
+            // The first curve bends up and right
+            context.moveTo(0, 0);
+            context.quadraticCurveTo(170, -50, 260, -190);
+
+            // The second curve continues down and right
+            context.quadraticCurveTo(310, -250, 410,-250);
+
+            // Draw the path in a wide brown stroke
+            context.strokeStyle = '#663300';
+            context.lineWidth = 20;
+            context.stroke();
+
+            // Restore the previous canvas state
+            context.restore();
+        }
+
+        window.addEventListener("load", drawTrails, true);
+  </script>
+</html>
+

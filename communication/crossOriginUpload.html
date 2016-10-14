@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<title>Upload Geolocation Data</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="http://apress.com/favicon.ico">
+<script>
+
+function loadDemo() {
+    var dataElement = document.getElementById("geodata");
+    dataElement.textContent = JSON.stringify(geoData).replace(",", ", ", "g");
+
+    var xhr = new XMLHttpRequest()
+    if (typeof xhr.withCredentials === undefined) {
+        document.getElementById("support").innerHTML = "Your browser <strong>does not</strong> support cross-origin XMLHttpRequest";
+    } else {
+        document.getElementById("support").innerHTML = "Your browser <strong>does</strong> support cross-origin XMLHttpRequest";
+    }
+
+    var targetLocation = "http://geodata.example.net:9999/upload";
+
+    function setProgress(s) {
+        document.getElementById("progress").innerHTML = s;
+    }
+
+    document.getElementById("sendButton").addEventListener("click",
+        function() {
+            xhr.upload.onprogress = function(e) {
+                var ratio = e.loaded / e.total;
+                setProgress(ratio + "% uploaded");
+            }
+			
+			xhr.onprogress = function(e) {
+				var ratio = e.loaded / e.total;
+				setProgress(ratio + "% downloaded");
+			}
+
+            xhr.onload = function(e) {
+                setProgress("finished");
+            }
+
+            xhr.onerror = function(e) {
+                setProgress("error");
+            }
+
+            xhr.open("POST", targetLocation, true);
+			
+            geoDataString = dataElement.textContent;
+            xhr.send(geoDataString);
+        }, true);
+
+}
+window.addEventListener("load", loadDemo, true);
+
+</script>
+
+<h1>XMLHttpRequest Level 2</h1>
+<p id="support"></p>
+
+<h4>Geolocation Data to upload:</h4>
+<textarea id="geodata">
+</textarea>
+</div>
+
+<button id="sendButton">Upload</button>
+
+<script>
+geoData = [[39.080018000000003, 39.112557000000002, 39.135261, 39.150458, 39.170653000000001, 39.190128000000001, 39.204510999999997, 39.226759000000001, 39.238483000000002, 39.228154000000004, 39.249400000000001, 39.249533, 39.225276999999998, 39.191253000000003, 39.167993000000003, 39.145685999999998, 39.121620999999998, 39.095761000000003, 39.080593, 39.053131999999998, 39.02619, 39.002929000000002, 38.982886000000001, 38.954034999999998, 38.944926000000002, 38.919960000000003, 38.925261999999996, 38.934922999999998, 38.949373000000001, 38.950133999999998, 38.952649000000001, 38.969692000000002, 38.988512999999998, 39.010652, 39.033088999999997, 39.053493000000003, 39.072752999999999], [-120.15724399999999, -120.15818299999999, -120.15600400000001, -120.14564599999999, -120.141285, -120.10889900000001, -120.09528500000002, -120.077596, -120.045428, -120.0119, -119.98897100000002, -119.95124099999998, -119.93270099999998, -119.927131, -119.92685999999999, -119.92636200000001, -119.92844600000001, -119.911036, -119.942834, -119.94413000000002, -119.94555200000001, -119.95411000000001, -119.941327, -119.94605900000001, -119.97527599999999, -119.99445, -120.028998, -120.066335, -120.07867300000001, -120.089985, -120.112227, -120.09790700000001, -120.10881000000001, -120.116692, -120.117847, -120.11727899999998, -120.14398199999999]];
+</script>
+
+<p>
+    <b>Status: </b> <span id="progress">ready</span>
+</p>
+

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <title>Image example</title>
+
+  <canvas id="trails" style="border: 1px solid;"  width="400" height="600"> </canvas>
+  <script>
+        // Load the bark image
+        var bark = new Image();
+        bark.src = "bark.jpg";
+
+        // Once the image is loaded, draw on the canvas
+        bark.onload = function () {
+            drawTrails();
+        }
+
+        function createCanopyPath(context) {
+            context.beginPath();
+            context.moveTo(-25, -50);
+            context.lineTo(-10, -80);
+            context.lineTo(-20, -80);
+            context.lineTo(-5, -110);
+            context.lineTo(-15, -110);
+
+            context.lineTo(0, -140);
+
+            context.lineTo(15, -110);
+            context.lineTo(5, -110);
+            context.lineTo(20, -80);
+            context.lineTo(10, -80);
+            context.lineTo(25, -50);
+            context.closePath();
+        }
+
+        function drawTrails() {
+            var canvas = document.getElementById('trails');
+            var context = canvas.getContext('2d');
+
+            context.save();
+            context.translate(130, 250);
+
+            createCanopyPath(context);
+
+            context.lineWidth = 4;
+            context.lineJoin = 'round';
+            context.strokeStyle = '#663300';
+            context.stroke();
+
+            context.fillStyle = '#339900';
+            context.fill();
+
+            // Draw the bark pattern image where
+            //  the filled rectangle was before
+            context.drawImage(bark, -5, -50, 10, 50);
+
+            context.restore();
+
+            context.save();
+            context.translate(-10, 350);
+            context.beginPath();
+            context.moveTo(0, 0);
+            context.quadraticCurveTo(170, -50, 260, -190);
+            context.quadraticCurveTo(310, -250, 410,-250);
+            context.strokeStyle = '#663300';
+            context.lineWidth = 20;
+            context.stroke();
+            context.restore();
+        }
+
+  </script>
+</html>
+

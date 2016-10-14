@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>Storage Log</title>
+<meta charset="utf-8">
+<script>
+
+    // display records of new storage events
+    function displayStorageEvent(e) {
+        var incomingRow = document.createElement('div');
+        document.getElementById("container").appendChild(incomingRow);
+
+        var logged = "key:" + e.key + ", newValue:" + e.newValue + ", oldValue:" + e.oldValue +
+        ", url:" + e.url + ", storageArea:" + e.storageArea;
+
+        incomingRow.innerHTML = logged;
+    }
+
+    // add listeners on storage events
+    window.addEventListener("storage", displayStorageEvent, true);
+</script>
+
+</head>
+
+  <body>
+    <div id="container"></div>
+  </body>
+
+</html>

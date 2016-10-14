@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<title>Portal [http://portal.example.com:9999]</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="http://apress.com/favicon.ico">
+<script>
+
+var targetOrigin = "http://chat.example.net:9999";
+
+var defaultTitle = "Portal [http://portal.example.com:9999]";
+var notificationTimer = null;
+
+function messageHandler(e) {
+    if (e.origin == targetOrigin) {
+        notify(e.data);
+    } else {
+        // ignore messages from other origins
+    }
+}
+
+function sendString(s) {
+    document.getElementById("widget").contentWindow.postMessage(s, targetOrigin);
+}
+
+
+function notify(message) {
+    stopBlinking();
+    blinkTitle(message, defaultTitle);
+}
+
+function stopBlinking() {
+    if (notificationTimer !== null) {
+        clearTimeout(notificationTimer);
+    }
+    document.title = defaultTitle;
+}
+
+function blinkTitle(m1, m2) {
+    document.title = m1;
+    notificationTimer = setTimeout(blinkTitle, 1000, m2, m1)
+}
+
+function sendStatus() {
+    var statusText = document.getElementById("statusText").value;
+    sendString(statusText);
+}
+
+function loadDemo() {
+    document.getElementById("sendButton").addEventListener("click", sendStatus, true);
+    document.getElementById("stopButton").addEventListener("click", stopBlinking, true);
+    sendStatus();
+}
+window.addEventListener("load", loadDemo, true);
+window.addEventListener("message", messageHandler, true);
+
+</script>
+
+<h1>Cross-Origin Portal</h1>
+<p><b>Origin</b>: http://portal.example.com:9999</p>
+Status <input type="text" id="statusText" value="Online">
+<button id="sendButton">Change Status</button>
+<p>
+This uses postMessage to send a status update to the widget iframe contained in the portal page.
+</p>
+<iframe id="widget" src="http://chat.example.net:9999/postMessageWidget.html"></iframe>
+<p>
+    <button id="stopButton">Stop Blinking Title</button>
+</p>
+

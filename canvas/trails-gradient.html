@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <title>Gradient example</title>
+
+  <canvas id="trails" style="border: 1px solid;"  width="400" height="600"> </canvas>
+  <script>
+        var gravel = new Image();
+        gravel.src = "gravel.jpg";
+        gravel.onload = function () {
+            drawTrails();
+        }
+
+        function createCanopyPath(context) {
+            context.beginPath();
+            context.moveTo(-25, -50);
+            context.lineTo(-10, -80);
+            context.lineTo(-20, -80);
+            context.lineTo(-5, -110);
+            context.lineTo(-15, -110);
+
+            context.lineTo(0, -140);
+
+            context.lineTo(15, -110);
+            context.lineTo(5, -110);
+            context.lineTo(20, -80);
+            context.lineTo(10, -80);
+            context.lineTo(25, -50);
+            context.closePath();
+        }
+
+        function drawTrails() {
+            var canvas = document.getElementById('trails');
+            var context = canvas.getContext('2d');
+
+            context.save();
+            context.translate(130, 250);
+
+            // Create a 3 stop gradient horizontally across the trunk
+            var trunkGradient = context.createLinearGradient(-5, -50, 5, -50);
+
+            // The beginning of the trunk is medium brown
+            trunkGradient.addColorStop(0, '#663300');
+
+            // The middle-left of the trunnk is lighter in color
+            trunkGradient.addColorStop(0.4, '#996600');
+
+            // The right edge of the trunk is darkest
+            trunkGradient.addColorStop(1, '#552200');
+
+            // Apply the gradient as the fill style, and draw the trunk
+            context.fillStyle = trunkGradient;
+            context.fillRect(-5, -50, 10, 50);
+
+
+            // A second, vertical gradient creates a shadow from the
+            //  canopy on the trunk
+            var canopyShadow = context.createLinearGradient(0, -50, 0, 0);
+
+            // The beginning of the shadow gradient is black, but with
+            //  a 50% alpha value
+            canopyShadow.addColorStop(0, 'rgba(0, 0, 0, 0.5)');
+
+            // Slightly further down, the gradient completely fades to
+            //  fully transparent. The rest of the trunk gets no shadow.
+            canopyShadow.addColorStop(0.2, 'rgba(0, 0, 0, 0.0)');
+
+            // Draw the shadow gradient on top of the trunk gradient
+            context.fillStyle = canopyShadow;
+            context.fillRect(-5, -50, 10, 50);
+
+            createCanopyPath(context);
+
+            context.lineWidth = 4;
+            context.lineJoin = 'round';
+            context.strokeStyle = '#663300';
+            context.stroke();
+
+            context.fillStyle = '#339900';
+            context.fill();
+
+            context.restore();
+
+            context.save();
+            context.translate(-10, 350);
+            context.beginPath();
+            context.moveTo(0, 0);
+            context.quadraticCurveTo(170, -50, 260, -190);
+            context.quadraticCurveTo(310, -250, 410,-250);
+            context.strokeStyle = '#663300';
+            context.lineWidth = 20;
+            context.stroke();
+            context.restore();
+        }
+
+  </script>
+</html>
+

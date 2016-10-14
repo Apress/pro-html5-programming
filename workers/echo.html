@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<title>Simple HTML5 Web Workers Example</title>
+
+<link rel="stylesheet" href="styles.css">
+
+<h1>Simple HTML5 Web Workers Example</h1>
+
+<p id="support">Your browser does not support HTML5 Web Workers.</p>
+
+<button id="stopButton" >Stop Task</button>
+<button id="helloButton" >Post a Message</button>
+
+<script>
+function stopWorker() {
+    worker.terminate();
+}
+
+function messageHandler(e) {
+    console.log(e.data);
+}
+
+function errorHandler(e) {
+    console.log(e.message, e);
+}
+
+
+function loadDemo() {
+    if (typeof(Worker) !== "undefined") {
+        document.getElementById("support").innerHTML = "Excellent! Your browser supports HTML5 Web Workers";
+
+        worker = new Worker("echoWorker.js");
+        worker.addEventListener("message", messageHandler, true);
+        worker.addEventListener("error", errorHandler, true);
+
+        document.getElementById("helloButton").onclick = function() {
+            worker.postMessage("Here's a message for you");
+        }
+
+        document.getElementById("stopButton").onclick = stopWorker;
+    }
+}
+
+window.addEventListener("load", loadDemo, true);
+
+</script>
+

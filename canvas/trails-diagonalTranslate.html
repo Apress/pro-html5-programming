@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <title>Translated diagonal line example</title>
+
+  <canvas id="diagonal" style="border: 1px solid;"  width="200" height="200"> </canvas>
+  <script>
+        function drawDiagonal() {
+            var canvas = document.getElementById('diagonal');
+            var context = canvas.getContext('2d');
+
+            // Save a copy of the current drawing state
+            context.save();
+
+            // Move the drawing context to the right, and down
+            context.translate(70, 140);
+
+            // Draw the same line as before, but using the origin as a start
+            context.beginPath();
+            context.moveTo(0, 0);
+            context.lineTo(70, -70);
+            context.stroke();
+
+            // Restore the old drawing state
+            context.restore();
+        }
+
+        window.addEventListener("load", drawDiagonal, true);
+  </script>
+</html>
+

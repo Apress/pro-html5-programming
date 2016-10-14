@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<title>widget</title>
+<link rel="stylesheet" href="styles.css">
+<script>
+
+var targetOrigin = "http://portal.example.com:9999";
+
+// TODO whitelist array
+
+function messageHandler(e) {
+    if (e.origin === "http://portal.example.com:9999") {
+        document.getElementById("status").textContent = e.data;
+    } else {
+        // ignore messages from other origins
+    }
+}
+
+function sendString(s) {
+    window.top.postMessage(s, targetOrigin);
+}
+
+function loadDemo() {
+    document.getElementById("actionButton").addEventListener("click",
+        function() {
+            var messageText = document.getElementById("messageText").value;
+            sendString(messageText);
+        }, true);
+
+}
+window.addEventListener("load", loadDemo, true);
+window.addEventListener("message", messageHandler, true);
+
+</script>
+<h1>Widget iframe</h1>
+<p><b>Origin</b>: http://chat.example.net:9999</p>
+<p>Status set to: <strong id="status"></strong> by containing portal.<p>
+
+<div>
+    <input type="text" id="messageText" value="Widget notification.">
+    <button id="actionButton">Send Notification</button>
+</div>
+
+<p>
+This will ask the portal to notify the user. The portal does this by flashing the title. If the message comes from an origin other than http://chat.example.net:9999, the portal page will ignore it.
+</p>
